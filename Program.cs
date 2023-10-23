@@ -11,7 +11,7 @@ namespace ToUpper
         private const string _infilenameBasis = _infilesFolder + "\\splitfile";
         private const string _outfilenameBasis = _outfilesFolder + "\\UPPERsplitfile";
         private const string _fileExtension = ".txt";
-        private bool _jobIsRunning = false;
+        private bool _jobIsRunning = default;
 
         static void Main(string[] args)
         {
