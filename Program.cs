@@ -11,7 +11,8 @@ namespace ToUpper
         private const string _infilenameBasis = "splitfile";
         private const string _outfilenameBasis = "UPPERsplitfile";
         private const string _fileExtension = ".txt";
-        private bool _jobIsRunning = false;
+        private bool _jobIsRunning = default;
+        private int _sheepCount = 0;
 
         static async Task Main(string[] args)
         {
@@ -24,6 +25,7 @@ namespace ToUpper
             int fileCount = Directory.GetFiles(_infilesFolder).Length;
             Console.WriteLine($"Starting job - {fileCount} files");
             await Job(fileCount);
+            CountSheep();
             Console.WriteLine("Job is done");
             Console.ReadKey();
         }
@@ -54,9 +56,19 @@ namespace ToUpper
 
                 // Write charbuf to the output file
                 await File.WriteAllTextAsync(outputFile, new string(charbuf));
-            }
+                _sheepCount++;
+                CountSheep();
 
+            }
+            
             _jobIsRunning = false;
+        }
+        private void CountSheep()
+        {
+            if (_sheepCount <= 65)
+            {
+                Console.WriteLine(_sheepCount + " sheep");
+            }
         }
     }
 }
