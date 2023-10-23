@@ -13,20 +13,23 @@ namespace ToUpper
         private const string _fileExtension = ".txt";
         private bool _jobIsRunning = false;
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             Program prog = new Program();
-            await prog.MainThread();
+            prog.MainThread();
         }
 
-        private async Task MainThread()
+        private void MainThread()
         {
             int fileCount = Directory.GetFiles(_infilesFolder).Length;
             Console.WriteLine($"Starting job - {fileCount} files");
-            await Job(fileCount);
+            Job(fileCount);
             CountSheep();
             Console.WriteLine("Job is done");
+            Console.ReadKey();
         }
+
+
 
         async public Task Job(int fileCount)
         {
