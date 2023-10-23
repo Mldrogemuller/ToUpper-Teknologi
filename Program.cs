@@ -11,7 +11,6 @@ namespace ToUpper
         private const string _infilenameBasis = "splitfile";
         private const string _outfilenameBasis = "UPPERsplitfile";
         private const string _fileExtension = ".txt";
-        private bool _jobIsRunning = default;
         private int _sheepCount = 0;
 
         static async Task Main(string[] args)
@@ -25,50 +24,49 @@ namespace ToUpper
             int fileCount = Directory.GetFiles(_infilesFolder).Length;
             Console.WriteLine($"Starting job - {fileCount} files");
             await Job(fileCount);
-            CountSheep();
             Console.WriteLine("Job is done");
             Console.ReadKey();
         }
 
         public async Task Job(int fileCount)
         {
-            _jobIsRunning = true;
-
             for (int i = 1; i <= fileCount; i++)
             {
-                string inputFile = Path.Combine(_infilesFolder, $"{_infilenameBasis}{i}{_fileExtension}");
-                string outputFile = Path.Combine(_outfilesFolder, $"{_outfilenameBasis}{i}{_fileExtension}");
+                int fileNumber = i; // Capture the current file number
 
-                char[] charbuf;
-
-                using (StreamReader sr = File.OpenText(inputFile))
+                await Task.Run(async () =>
                 {
-                    int fileSize = (int)new FileInfo(inputFile).Length;
-                    charbuf = new char[fileSize];
-                    await sr.ReadAsync(charbuf, 0, fileSize);
-                }
+                    string inputFile = Path.Combine(_infilesFolder, $"{_infilenameBasis}{fileNumber}{_fileExtension}");
+                    string outputFile = Path.Combine(_outfilesFolder, $"{_outfilenameBasis}{fileNumber}{_fileExtension}");
 
-                // Convert the content to uppercase
-                for (int j = 0; j < charbuf.Length; j++)
-                {
-                    charbuf[j] = Char.ToUpper(charbuf[j]);
-                }
+                    char[] charbuf;
 
-                // Write charbuf to the output file
-                await File.WriteAllTextAsync(outputFile, new string(charbuf));
-                _sheepCount++;
-                CountSheep();
+                    using (StreamReader sr = File.OpenText(inputFile))
+                    {
+                        int fileSize = (int)new FileInfo(inputFile).Length;
+                        charbuf = new char[fileSize];
+                        await sr.ReadAsync(charbuf, 0, fileSize);
+                    }
 
+                    // Convert the content to uppercase
+                    for (int j = 0; j < charbuf.Length; j++)
+                    {
+                        charbuf[j] = Char.ToUpper(charbuf[j]);
+                    }
+
+                    // Write charbuf to the output file
+                    await File.WriteAllTextAsync(outputFile, new string(charbuf));
+
+                    // Call CountSheep to update the count
+                    CountSheep();
+                });
             }
-            
-            _jobIsRunning = false;
         }
+
         private void CountSheep()
         {
-            if (_sheepCount <= 65)
-            {
-                Console.WriteLine(_sheepCount + " sheep");
-            }
+            _sheepCount++;
+            Console.WriteLine($"{_sheepCount} sheep");
         }
     }
 }
